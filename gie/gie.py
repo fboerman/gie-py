@@ -30,16 +30,30 @@ class GieRawClient:
         if type(end) != pd.Timestamp:
             end = pd.Timestamp(end)
 
-        r = self.s.get(t.value + url, params={
-            'from': start.strftime('%Y-%m-%d'),
-            'till': end.strftime('%Y-%m-%d')
-        })
-        r.raise_for_status()
+        def _fetch_one(start, end):
+            r = self.s.get(t.value + url, params={
+                'from': start.strftime('%Y-%m-%d'),
+                'till': end.strftime('%Y-%m-%d')
+            })
+            r.raise_for_status()
 
-        if t == APIType.ASGI:
-            return r.json()['data']
+            if t == APIType.ASGI:
+                return r.json()['data']
+            else:
+                return r.json()
+
+        if t == APIType.ASGI and (end - start).days > 30:
+            data = []
+            start_selected = end - pd.Timedelta(days=30)
+            while start_selected > start:
+                data += _fetch_one(start_selected, start_selected + pd.Timedelta(days=30))
+                start_selected -= pd.Timedelta(days=31)
+            data += _fetch_one(start, (start_selected + pd.Timedelta(days=30)))
+
+            return data
         else:
-            return r.json()
+            return _fetch_one(start, end)
+
 
     def query_gas_storage(self, storage: Union[ASGIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
