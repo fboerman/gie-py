@@ -1,7 +1,8 @@
 import requests
 import pandas as pd
 from typing import List, Dict, Union
-from .mappings import ASGICompany, ASGIStorage, lookup_company, lookup_storage
+from .asgi_mappings import ASGICompany, ASGIStorage, lookup_company, lookup_storage
+from .alsi_mappings import ALSITerminal, ALSILSO, lookup_terminal, lookup_lso
 from enum import Enum
 
 __title__ = "gie-py"
@@ -12,7 +13,7 @@ __license__ = "MIT"
 
 class APIType(str, Enum):
     ASGI = "https://agsi.gie.eu/api/data/"
-    ALSGI = "https://alsi.gie.eu/api/data/"
+    ALSI = "https://alsi.gie.eu/api/data/"
 
 
 class GieRawClient:
@@ -54,7 +55,6 @@ class GieRawClient:
         else:
             return _fetch_one(start, end)
 
-
     def query_gas_storage(self, storage: Union[ASGIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         storage = lookup_storage(storage)
@@ -64,6 +64,16 @@ class GieRawClient:
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         company = lookup_company(company)
         return self._fetch(company.get_url(), APIType.ASGI, start=start, end=end)
+
+    def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
+                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+        terminal = lookup_terminal(terminal)
+        return self._fetch(terminal.get_url(), APIType.ALSI, start=start, end=end)
+
+    def query_lng_lso(self, lso: Union[ALSILSO, str],
+                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+        lso = lookup_lso(lso)
+        return self._fetch(lso.get_url(), APIType.ALSI, start=start, end=end)
 
 
 class GiePandasClient(GieRawClient):
@@ -75,7 +85,16 @@ class GiePandasClient(GieRawClient):
         status = df['status'].copy()
         df = df.drop(columns=['status']).astype(float)
         df['status'] = status
+        return df
 
+    def _fix_alsi_dataframe(self, data):
+        df = pd.DataFrame(data).drop(columns=['info'])
+        df['gasDayStartedOn'] = pd.to_datetime(df['gasDayStartedOn'])
+        df = df.set_index('gasDayStartedOn')
+        # status is only str column, save it for now, convert whole dataframe to float, restore status
+        status = df['status'].copy()
+        df = df.drop(columns=['status']).astype(float)
+        df['status'] = status
         return df
 
     def query_gas_storage(self, storage: Union[ASGIStorage, str],
@@ -88,4 +107,16 @@ class GiePandasClient(GieRawClient):
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_asgi_dataframe(
             super().query_gas_company(company=company, start=start, end=end)
+        )
+
+    def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
+                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+        return self._fix_alsi_dataframe(
+            super().query_lng_terminal(terminal=terminal, start=start, end=end)
+        )
+
+    def query_lng_lso(self, lso: Union[ALSILSO, str],
+                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+        return self._fix_alsi_dataframe(
+            super().query_lng_lso(lso=lso, start=start, end=end)
         )
