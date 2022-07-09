@@ -1,12 +1,13 @@
 import requests
 import pandas as pd
 from typing import List, Dict, Union
-from .asgi_mappings import ASGICompany, ASGIStorage, lookup_company, lookup_storage
+from .agsi_mappings import ASGICompany, ASGIStorage, lookup_company, lookup_storage
 from .alsi_mappings import ALSITerminal, ALSILSO, lookup_terminal, lookup_lso
+from .exceptions import NoMatchingDataError
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -50,10 +51,13 @@ class GieRawClient:
                 data += _fetch_one(start_selected, start_selected + pd.Timedelta(days=30))
                 start_selected -= pd.Timedelta(days=31)
             data += _fetch_one(start, (start_selected + pd.Timedelta(days=30)))
-
-            return data
         else:
-            return _fetch_one(start, end)
+            data = _fetch_one(start, end)
+
+        if len(data) == 0:
+            raise NoMatchingDataError
+
+        return data
 
     def query_gas_storage(self, storage: Union[ASGIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
