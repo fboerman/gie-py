@@ -2,34 +2,34 @@ import enum
 from typing import Union
 
 
-def lookup_company(s: Union['ASGICompany', str]) -> 'ASGICompany':
-    if isinstance(s, ASGICompany):
+def lookup_company(s: Union['AGSICompany', str]) -> 'AGSICompany':
+    if isinstance(s, AGSICompany):
         # If it already is an ASGICompany object, we're happy
         return s
     else:  # It is a string
         try:
             # do lookup
-            return ASGICompany[s]
+            return AGSICompany[s]
         except KeyError:
             # It is not, it may be a direct code
             try:
-                return [obj for obj in ASGICompany if obj.value == s][0]
+                return [obj for obj in AGSICompany if obj.value == s][0]
             except IndexError:
                 raise ValueError('Invalid company string')
 
 
-def lookup_storage(s: Union['ASGIStorage', str]) -> 'ASGIStorage':
-    if isinstance(s, ASGIStorage):
+def lookup_storage(s: Union['AGSIStorage', str]) -> 'AGSIStorage':
+    if isinstance(s, AGSIStorage):
         # If it already is an ASGIStorage object, we're happy
         return s
     else:  # It is a string
         try:
             # do lookup
-            return ASGIStorage[s]
+            return AGSIStorage[s]
         except KeyError:
             # It is not, it may be a direct code
             try:
-                return [obj for obj in ASGIStorage if obj.value == s][0]
+                return [obj for obj in AGSIStorage if obj.value == s][0]
             except IndexError:
                 raise ValueError('Invalid storage string')
 
@@ -103,7 +103,7 @@ class AGSICountry(enum.Enum):
     UA = "UA", "Ukraine"
     GB = "GB*", "United Kingdom (Post-Brexit)"
 
-class ASGICompany(enum.Enum):
+class AGSICompany(enum.Enum):
     """
     ENUM containing 2 things about an Area: code, country
     """
@@ -204,7 +204,7 @@ class ASGICompany(enum.Enum):
     uniper_energy_storage_ltd = '21X0000000013716', 'GB'
 
 
-class ASGIStorage(enum.Enum):
+class AGSIStorage(enum.Enum):
     """
     ENUM containing 3 things about an Area: code, country, code company
     """

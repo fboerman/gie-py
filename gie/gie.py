@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 from typing import List, Dict, Union
-from .agsi_mappings import ASGICompany, ASGIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
+from .agsi_mappings import AGSICompany, AGSIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
 from .alsi_mappings import ALSITerminal, ALSILSO, lookup_terminal, lookup_lso
 from .exceptions import NoMatchingDataError
 from enum import Enum
@@ -59,12 +59,12 @@ class GieRawClient:
 
         return data
 
-    def query_gas_storage(self, storage: Union[ASGIStorage, str],
+    def query_gas_storage(self, storage: Union[AGSIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         storage = lookup_storage(storage)
         return self._fetch(storage.get_url(), APIType.ASGI, start=start, end=end)
 
-    def query_gas_company(self, company: Union[ASGICompany, str],
+    def query_gas_company(self, company: Union[AGSICompany, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         company = lookup_company(company)
         return self._fetch(company.get_url(), APIType.ASGI, start=start, end=end)
@@ -86,7 +86,7 @@ class GieRawClient:
 
 
 class GiePandasClient(GieRawClient):
-    def _fix_asgi_dataframe(self, data):
+    def _fix_agsi_dataframe(self, data):
         df = pd.DataFrame(data).drop(columns=['name', 'code', 'url', 'info'])
         df = df.loc[df['status'] != 'N']
         if len(df) == 0:
@@ -109,21 +109,21 @@ class GiePandasClient(GieRawClient):
         df['status'] = status
         return df
 
-    def query_gas_storage(self, storage: Union[ASGIStorage, str],
+    def query_gas_storage(self, storage: Union[AGSIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
-        return self._fix_asgi_dataframe(
+        return self._fix_agsi_dataframe(
             super().query_gas_storage(storage=storage, start=start, end=end)
         )
 
-    def query_gas_company(self, company: Union[ASGIStorage, str],
+    def query_gas_company(self, company: Union[AGSIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
-        return self._fix_asgi_dataframe(
+        return self._fix_agsi_dataframe(
             super().query_gas_company(company=company, start=start, end=end)
         )
 
     def query_country(self, country: Union[AGSICountry, str],
                       start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
-        return self._fix_asgi_dataframe(
+        return self._fix_agsi_dataframe(
             super().query_country(country=country, start=start, end=end)
         )
 
