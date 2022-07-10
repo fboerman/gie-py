@@ -20,7 +20,7 @@ def lookup_company(s: Union['ASGICompany', str]) -> 'ASGICompany':
 
 def lookup_storage(s: Union['ASGIStorage', str]) -> 'ASGIStorage':
     if isinstance(s, ASGIStorage):
-        # If it already is an ASGICompany object, we're happy
+        # If it already is an ASGIStorage object, we're happy
         return s
     else:  # It is a string
         try:
@@ -33,6 +33,75 @@ def lookup_storage(s: Union['ASGIStorage', str]) -> 'ASGIStorage':
             except IndexError:
                 raise ValueError('Invalid storage string')
 
+
+def lookup_country(s: Union['AGSICountry', str]) -> 'AGSICountry':
+    if isinstance(s, AGSICountry):
+        # If it already is an AGSICountry object, we're happy
+        return s
+    else:  # It is a string
+        try:
+            # do lookup
+            return AGSICountry[s]
+        except KeyError:
+            # It is not, it may be a direct code
+            try:
+                return [obj for obj in AGSICountry if obj.value == s][0]
+            except IndexError:
+                raise ValueError('Invalid country string')
+
+
+class AGSICountry(enum.Enum):
+    """
+    ENUM contains 2 things: code and full name
+
+    """
+
+    def __new__(cls, *args, **kwds):
+        obj = object.__new__(cls)
+        obj._value_ = args[0]
+        return obj
+
+    # ignore the first param since it's already set by __new__
+    def __init__(self, _: str, full_name: str):
+        self._full_name = full_name
+
+    def __str__(self):
+        return self.value
+
+    @property
+    def full_name(self):
+        return self._full_name
+
+    @property
+    def code(self):
+        return self.value
+
+    def get_url(self):
+        return self.code
+
+    AT = "AT", "Austria"
+    BE = "BE", "Belgium"
+    BG = "BG", "Bulgaria"
+    HR = "HR", "Croatia"
+    CZ = "CZ", "Czech Republic"
+    DK = "DK", "Denmark"
+    FR = "FR", "France"
+    DE = "DE", "Germany"
+    HU = "HU", "Hungary"
+    IE = "IE", "Ireland"
+    IT = "IT", "Italy"
+    LV = "LV", "Latvia"
+    NL = "NL", "Netherlands"
+    PL = "PL", "Poland"
+    PT = "PT", "Portugal"
+    RO = "RO", "Romania"
+    SK = "SK", "Slovakia"
+    ES = "ES", "Spain"
+    SE = "SE", "Sweden"
+    GB_pre = "GB", "United Kingdom (Pre-Brexit)"
+    RS = "RS", "Serbia"
+    UA = "UA", "Ukraine"
+    GB = "GB*", "United Kingdom (Post-Brexit)"
 
 class ASGICompany(enum.Enum):
     """

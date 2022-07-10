@@ -1,13 +1,13 @@
 import requests
 import pandas as pd
 from typing import List, Dict, Union
-from .agsi_mappings import ASGICompany, ASGIStorage, lookup_company, lookup_storage
+from .agsi_mappings import ASGICompany, ASGIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
 from .alsi_mappings import ALSITerminal, ALSILSO, lookup_terminal, lookup_lso
 from .exceptions import NoMatchingDataError
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -69,6 +69,11 @@ class GieRawClient:
         company = lookup_company(company)
         return self._fetch(company.get_url(), APIType.ASGI, start=start, end=end)
 
+    def query_country(self, country: Union[AGSICountry, str],
+                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+        country = lookup_country(country)
+        return self._fetch(country.get_url(), APIType.ASGI, start=start, end=end)
+
     def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
                            start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         terminal = lookup_terminal(terminal)
@@ -83,6 +88,9 @@ class GieRawClient:
 class GiePandasClient(GieRawClient):
     def _fix_asgi_dataframe(self, data):
         df = pd.DataFrame(data).drop(columns=['name', 'code', 'url', 'info'])
+        df = df.loc[df['status'] != 'N']
+        if len(df) == 0:
+            raise NoMatchingDataError
         df['gasDayStart'] = pd.to_datetime(df['gasDayStart'])
         df = df.set_index('gasDayStart')
         # status is only str column, save it for now, convert whole dataframe to float, restore status
@@ -111,6 +119,12 @@ class GiePandasClient(GieRawClient):
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_asgi_dataframe(
             super().query_gas_company(company=company, start=start, end=end)
+        )
+
+    def query_country(self, country: Union[AGSICountry, str],
+                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+        return self._fix_asgi_dataframe(
+            super().query_country(country=country, start=start, end=end)
         )
 
     def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
