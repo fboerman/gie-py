@@ -7,7 +7,7 @@ from .exceptions import NoMatchingDataError
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -51,6 +51,11 @@ class GieRawClient:
                 data += _fetch_one(start_selected, start_selected + pd.Timedelta(days=30))
                 start_selected -= pd.Timedelta(days=31)
             data += _fetch_one(start, (start_selected + pd.Timedelta(days=30)))
+        elif (end - start).days == 0:
+            # only one day being queried, the api will return zero data (weird!)
+            # so automatically append one day and then remove it from the result
+            end += pd.Timedelta(days=1)
+            data = _fetch_one(start, end)[:1]
         else:
             data = _fetch_one(start, end)
 
