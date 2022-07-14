@@ -34,6 +34,62 @@ def lookup_terminal(s: Union['ALSITerminal', str]) -> 'ALSITerminal':
                 raise ValueError('Invalid terminal string')
 
 
+def lookup_country(s: Union['ALSICountry', str]) -> 'ALSICountry':
+    if isinstance(s, ALSICountry):
+        # If it already is an AGSICountry object, we're happy
+        return s
+    else:  # It is a string
+        try:
+            # do lookup
+            return ALSICountry[s]
+        except KeyError:
+            # It is not, it may be a direct code
+            try:
+                return [obj for obj in ALSICountry if obj.value == s][0]
+            except IndexError:
+                raise ValueError('Invalid country string')
+
+
+class ALSICountry(enum.Enum):
+    """
+    ENUM contains 2 things: code and full name
+
+    """
+
+    def __new__(cls, *args, **kwds):
+        obj = object.__new__(cls)
+        obj._value_ = args[0]
+        return obj
+
+    # ignore the first param since it's already set by __new__
+    def __init__(self, _: str, full_name: str):
+        self._full_name = full_name
+
+    def __str__(self):
+        return self.value
+
+    @property
+    def full_name(self):
+        return self._full_name
+
+    @property
+    def code(self):
+        return self.value
+
+    def get_url(self):
+        return self.code
+
+    BE = "BE", "Belgium"
+    HR = "HR", "Croatia"
+    FR = "FR", "France"
+    GR = "GR", "Greece"
+    IT = "IT", "Italy"
+    LT = "LT", "Lithuania"
+    NL = "NL", "Netherlands"
+    PL = "PL", "Poland"
+    PT = "PT", "Portugal"
+    ES = "ES", "Spain"
+
 class ALSILSO(enum.Enum):
     """
     ENUM containing 2 things about an Area: code, country

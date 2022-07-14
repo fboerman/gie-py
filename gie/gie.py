@@ -2,12 +2,12 @@ import requests
 import pandas as pd
 from typing import List, Dict, Union
 from .agsi_mappings import AGSICompany, AGSIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
-from .alsi_mappings import ALSITerminal, ALSILSO, lookup_terminal, lookup_lso
+from .alsi_mappings import ALSITerminal, ALSILSO, ALSICountry, lookup_terminal, lookup_lso, lookup_country as lookup_country_alsi
 from .exceptions import NoMatchingDataError
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -74,7 +74,7 @@ class GieRawClient:
         company = lookup_company(company)
         return self._fetch(company.get_url(), APIType.ASGI, start=start, end=end)
 
-    def query_country(self, country: Union[AGSICountry, str],
+    def query_gas_country(self, country: Union[AGSICountry, str],
                       start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         country = lookup_country(country)
         return self._fetch(country.get_url(), APIType.ASGI, start=start, end=end)
@@ -88,6 +88,11 @@ class GieRawClient:
                            start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         lso = lookup_lso(lso)
         return self._fetch(lso.get_url(), APIType.ALSI, start=start, end=end)
+
+    def query_lng_country(self, country: Union[ALSICountry, str],
+                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+        country = lookup_country_alsi(country)
+        return self._fetch(country.get_url(), APIType.ALSI, start=start, end=end)
 
 
 class GiePandasClient(GieRawClient):
@@ -126,10 +131,10 @@ class GiePandasClient(GieRawClient):
             super().query_gas_company(company=company, start=start, end=end)
         )
 
-    def query_country(self, country: Union[AGSICountry, str],
+    def query_gas_country(self, country: Union[AGSICountry, str],
                       start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_agsi_dataframe(
-            super().query_country(country=country, start=start, end=end)
+            super().query_gas_country(country=country, start=start, end=end)
         )
 
     def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
@@ -142,4 +147,10 @@ class GiePandasClient(GieRawClient):
                            start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_alsi_dataframe(
             super().query_lng_lso(lso=lso, start=start, end=end)
+        )
+
+    def query_lng_country(self, country: Union[ALSICountry, str],
+                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+        return self._fix_alsi_dataframe(
+            super().query_lng_country(country=country, start=start, end=end)
         )
