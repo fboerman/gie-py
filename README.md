@@ -17,8 +17,10 @@ The same for both clients. Each method has same setup for arguments, a string to
 and a start and end parameter which is either a pandas timestamp or a string
 * ```query_gas_storage```
 * ```query_gas_company```
+* ```query_gas_country```
 * ```query_lng_terminal```
 * ```query_lng_lso```
+* ```query_lng_country```
 
 ### Example
 ```python
