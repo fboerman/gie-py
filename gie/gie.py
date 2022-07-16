@@ -3,17 +3,17 @@ import pandas as pd
 from typing import List, Dict, Union
 from .agsi_mappings import AGSICompany, AGSIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
 from .alsi_mappings import ALSITerminal, ALSILSO, ALSICountry, lookup_terminal, lookup_lso, lookup_country as lookup_country_alsi
-from .exceptions import NoMatchingDataError
+from .exceptions import *
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
 
 class APIType(str, Enum):
-    ASGI = "https://agsi.gie.eu/api/data/"
+    AGSI = "https://agsi.gie.eu/api/data/"
     ALSI = "https://alsi.gie.eu/api/data/"
 
 
@@ -39,25 +39,33 @@ class GieRawClient:
             })
             r.raise_for_status()
 
-            if t == APIType.ASGI:
+            if t == APIType.AGSI:
+                if r.json()['dataset'] == 'ERROR':
+                    raise ApiError('Server returned exception: ' + r.json()['exception'])
+
+            if t == APIType.AGSI:
                 return r.json()['data']
             else:
                 return r.json()
 
-        if t == APIType.ASGI and (end - start).days > 30:
-            data = []
-            start_selected = end - pd.Timedelta(days=30)
-            while start_selected > start:
-                data += _fetch_one(start_selected, start_selected + pd.Timedelta(days=30))
-                start_selected -= pd.Timedelta(days=31)
-            data += _fetch_one(start, (start_selected + pd.Timedelta(days=30)))
-        elif (end - start).days == 0:
-            # only one day being queried, the api will return zero data (weird!)
-            # so automatically append one day and then remove it from the result
-            end += pd.Timedelta(days=1)
-            data = _fetch_one(start, end)[:1]
-        else:
-            data = _fetch_one(start, end)
+        try:
+            if t == APIType.AGSI and (end - start).days > 30:
+                data = []
+                start_selected = end - pd.Timedelta(days=30)
+                while start_selected > start:
+                    data += _fetch_one(start_selected, start_selected + pd.Timedelta(days=30))
+                    start_selected -= pd.Timedelta(days=31)
+                data += _fetch_one(start, (start_selected + pd.Timedelta(days=30)))
+            else:
+                data = _fetch_one(start, end)
+        except ApiError:
+            # for shorter durations of days especially near current time sometimes the api will error out
+            # this can be fixed by querying for a longer duration, when this succeeds then slice out the dates requested
+            # this is probably some kind of bug on agsi side, and it only happens with agsi
+            # no if needed since only agsi gives api errors like this
+            start_ = start - pd.Timedelta(days=5)
+            end_ = end + pd.Timedelta(days=5)
+            data = [x for x in _fetch_one(start_, end_) if start <= pd.Timestamp(x['gasDayStart']) <= end]
 
         if len(data) == 0:
             raise NoMatchingDataError
@@ -67,17 +75,17 @@ class GieRawClient:
     def query_gas_storage(self, storage: Union[AGSIStorage, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         storage = lookup_storage(storage)
-        return self._fetch(storage.get_url(), APIType.ASGI, start=start, end=end)
+        return self._fetch(storage.get_url(), APIType.AGSI, start=start, end=end)
 
     def query_gas_company(self, company: Union[AGSICompany, str],
                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         company = lookup_company(company)
-        return self._fetch(company.get_url(), APIType.ASGI, start=start, end=end)
+        return self._fetch(company.get_url(), APIType.AGSI, start=start, end=end)
 
     def query_gas_country(self, country: Union[AGSICountry, str],
                       start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         country = lookup_country(country)
-        return self._fetch(country.get_url(), APIType.ASGI, start=start, end=end)
+        return self._fetch(country.get_url(), APIType.AGSI, start=start, end=end)
 
     def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
                            start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
