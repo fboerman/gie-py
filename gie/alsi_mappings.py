@@ -79,6 +79,7 @@ class ALSICountry(enum.Enum):
     def get_url(self):
         return self.code
 
+    EU = "eu", "EU"
     BE = "BE", "Belgium"
     HR = "HR", "Croatia"
     FR = "FR", "France"
