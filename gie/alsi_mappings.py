@@ -76,8 +76,10 @@ class ALSICountry(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code
+    def get_params(self):
+        return {
+            'country': self.code
+        }
 
     BE = "BE", "Belgium"
     HR = "HR", "Croatia"
@@ -115,8 +117,11 @@ class ALSILSO(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code + '/' + self.country
+    def get_params(self):
+        return {
+            'country': self.country,
+            'company': self.code,
+        }
 
     fluxys_lng = '21X000000001006T', 'BE'
     bbg = '21X000000001352A', 'ES'
@@ -170,8 +175,12 @@ class ALSITerminal(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code + '/' + self.country + '/' + self.company
+    def get_params(self):
+        return {
+            'country': self.country,
+            'company': self.company,
+            'facility': self.code
+        }
 
     zeebrugge = '21W0000000001245', 'BE', '21X000000001006T'
     bilbao = '21W0000000000362', 'ES', '21X000000001352A'

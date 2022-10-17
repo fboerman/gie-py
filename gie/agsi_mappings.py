@@ -76,8 +76,10 @@ class AGSICountry(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code
+    def get_params(self):
+        return {
+            'country': self.code
+        }
 
     AT = "AT", "Austria"
     BE = "BE", "Belgium"
@@ -102,6 +104,7 @@ class AGSICountry(enum.Enum):
     RS = "RS", "Serbia"
     UA = "UA", "Ukraine"
     GB = "GB*", "United Kingdom (Post-Brexit)"
+
 
 class AGSICompany(enum.Enum):
     """
@@ -128,8 +131,11 @@ class AGSICompany(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code + '/' + self.country
+    def get_params(self):
+        return {
+            'country': self.country,
+            'company': self.code,
+        }
 
     astora = '21X000000001160J', 'AT'
     gsa = '25X-GSALLC-----E', 'AT'
@@ -234,8 +240,12 @@ class AGSIStorage(enum.Enum):
     def code(self):
         return self.value
 
-    def get_url(self):
-        return self.code + '/' + self.country + '/' + self.company
+    def get_params(self):
+        return {
+            'country': self.country,
+            'company': self.company,
+            'facility': self.code
+        }
 
     ugs_haidach_astora = '21W000000000078N', 'AT', '21X000000001160J'
     ugs_haidach_gsa = '25W-SPHAID-GAZ-M', 'AT', '25X-GSALLC-----E'

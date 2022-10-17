@@ -32,4 +32,4 @@ df_lso=client.query_lng_lso('fluxys_lng', start='2020-01-01', end='2022-07-10')
 ```
 
 ## meaning of dataframe columns
-For the meaning of the columns in the resulting dataframes please consult the official [documentation](https://alsi.gie.eu/GIE_API_documentation_v004.pdf) chapter 2 page 5 and 6
+For the meaning of the columns in the resulting dataframes please consult the official [documentation](https://alsi.gie.eu/GIE_API_documentation_v007.pdf) chapter 2 page 5 and 6
