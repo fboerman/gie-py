@@ -7,7 +7,7 @@ from .exceptions import *
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -96,8 +96,10 @@ class GiePandasClient(GieRawClient):
         df = df.set_index('gasDayStart')
         # status is only str column, save it for now, convert whole dataframe to float, restore status
         status = df['status'].copy()
-        df = df.drop(columns=['status']).replace('-', 0).astype(float)
+        updated_at = pd.to_datetime(df['updatedAt'])
+        df = df.drop(columns=['status', 'updatedAt']).replace('-', 0).astype(float)
         df['status'] = status
+        df['updatedAt'] = updated_at
         return df
 
     def query_gas_storage(self, storage: Union[AGSIStorage, str],
