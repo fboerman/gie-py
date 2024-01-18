@@ -7,7 +7,7 @@ from .exceptions import *
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -97,7 +97,10 @@ class GiePandasClient(GieRawClient):
         # status is only str column, save it for now, convert whole dataframe to float, restore status
         status = df['status'].copy()
         updated_at = pd.to_datetime(df['updatedAt'])
-        df = df.drop(columns=['status', 'updatedAt']).replace('-', 0).astype(float)
+        df = df.drop(columns=['status', 'updatedAt'])
+        if 'type' in df:
+            df = df.drop(columns=['type'])
+        df = df.replace('-', 0).astype(float)
         df['status'] = status
         df['updatedAt'] = updated_at
         return df
