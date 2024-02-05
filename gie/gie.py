@@ -7,7 +7,7 @@ from .exceptions import *
 from enum import Enum
 
 __title__ = "gie-py"
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 __author__ = "Frank Boerman"
 __license__ = "MIT"
 
@@ -88,8 +88,10 @@ class GieRawClient:
 class GiePandasClient(GieRawClient):
     def _fix_dataframe(self, data):
         def _fix_values(x):
-            x['inventory'] = x['inventory']['lng']
-            x['dtmi'] = x['dtmi']['lng']
+            if 'inventory' in x:
+                x['inventory'] = x['inventory']['lng']
+            if 'dtmi' in x:
+                x['dtmi'] = x['dtmi']['lng']
             return x
         df = pd.DataFrame([_fix_values(x) for x in data])
         for c in ['name', 'code', 'url', 'info']:
