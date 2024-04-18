@@ -82,15 +82,18 @@ class ALSICountry(enum.Enum):
         }
 
     BE = "BE", "Belgium"
-    HR = "HR", "Croatia"
+    DE = "DE", "Germany"
+    ES = "ES", "Spain"
+    FI = "FI", "Finland"
     FR = "FR", "France"
+    GB = "GB", "Great Britain"
     GR = "GR", "Greece"
+    HR = "HR", "Croatia"
     IT = "IT", "Italy"
     LT = "LT", "Lithuania"
     NL = "NL", "Netherlands"
     PL = "PL", "Poland"
     PT = "PT", "Portugal"
-    ES = "ES", "Spain"
 
 
 class ALSILSO(enum.Enum):
@@ -125,23 +128,33 @@ class ALSILSO(enum.Enum):
         }
 
     fluxys_lng = '21X000000001006T', 'BE'
+    rwe_supply_trading = '11XRWETRADING--0', 'DE'
+    deutsche_energy_terminal = '21X000000001403J', 'DE'
+    deutsche_regas = '37X000000000265F', 'DE'
     bbg = '21X000000001352A', 'ES'
     enagas_transporte = '21X000000001254A', 'ES'
     saggas = '18XTGPRS-12345-G', 'ES'
     reganosa = '18XRGNSA-12345-V', 'ES'
     all_spanish_terminals = '21X0000000013368', 'ES'
+    musel = '21X000000000134P', 'ES'
+    hamina = '66X-00000000024H', 'FI'
+    floating_lng_terminal_finland = '66X000000000027Z', 'FI'
     elengy = '21X0000000010679', 'FR'
     dunkerque_lng = '21X000000001331I', 'FR'
     fosmax_lng = '21X000000001070K', 'FR'
+    totalenergies_lng = '63X218318139939Y', 'FR'
     national_grid_grain_lng = '21X-GB-A-A0A0A-7', 'GB'
     south_hook_lng = '21X0000000013554', 'GB'
     desfa = '21X-GR-A-A0A0A-G', 'GR'
+    gastrade = '21X738265265081N', 'GR'
     lng_croatia = '31X-LNG-HR-----7', 'HR'
     gnl_italia = '26X00000117915-0', 'IT'
     olt_offshore_lng_toscana = '21X000000001109G', 'IT'
     adriatic_lng = '21X000000001360B', 'IT'
+    snam_fsru = '59XFSRUITALIASTY', 'IT'
     klaipedos_nafta = '21X0000000013740', 'LT'
     gate_terminal = '21X000000001063H', 'NL'
+    eems_energy = '52X000000000088H', 'NL'
     gaz_system = '21X-PL-A-A0A0A-B', 'PL'
     ren_atlantico = '21X0000000013619', 'PT'
 
