@@ -1,8 +1,10 @@
 import requests
+from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
 from typing import List, Dict, Union
 from .agsi_mappings import AGSICompany, AGSIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
-from .alsi_mappings import ALSITerminal, ALSILSO, ALSICountry, lookup_terminal, lookup_lso, lookup_country as lookup_country_alsi
+from .alsi_mappings import ALSITerminal, ALSILSO, ALSICountry, lookup_terminal, lookup_lso, \
+    lookup_country as lookup_country_alsi
 from .exceptions import *
 from enum import Enum
 
@@ -20,6 +22,11 @@ class APIType(str, Enum):
 class GieRawClient:
     def __init__(self, api_key):
         self.s = requests.Session()
+        retries = Retry(total=5,
+                        backoff_factor=0.1,
+                        status_forcelist=[500, 502, 503, 504])
+        self.s.mount('http://', HTTPAdapter(max_retries=retries))
+        self.s.mount('https://', HTTPAdapter(max_retries=retries))
         self.s.headers.update({
             'user-agent': f'gie-py v{__version__} (github.com/fboerman/gie-py)',
             'x-key': api_key
@@ -27,18 +34,18 @@ class GieRawClient:
 
     def _fetch(self, obj, t: APIType,
                start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]):
-        if type(start) != pd.Timestamp:
+        if type(start) is not pd.Timestamp:
             start = pd.Timestamp(start)
-        if type(end) != pd.Timestamp:
+        if type(end) is not pd.Timestamp:
             end = pd.Timestamp(end)
 
         def _fetch_one(start, end, obj, page=1):
             r = self.s.get(t.value, params={
-                'from': start.strftime('%Y-%m-%d'),
-                'till': end.strftime('%Y-%m-%d'),
-                'size': 300,
-                'page': page
-            } | obj.get_params())
+                                               'from': start.strftime('%Y-%m-%d'),
+                                               'till': end.strftime('%Y-%m-%d'),
+                                               'size': 300,
+                                               'page': page
+                                           } | obj.get_params())
             r.raise_for_status()
 
             return r.json()
@@ -65,7 +72,7 @@ class GieRawClient:
         return self._fetch(company, APIType.AGSI, start=start, end=end)
 
     def query_gas_country(self, country: Union[AGSICountry, str],
-                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         country = lookup_country(country)
         return self._fetch(country, APIType.AGSI, start=start, end=end)
 
@@ -75,7 +82,7 @@ class GieRawClient:
         return self._fetch(terminal, APIType.ALSI, start=start, end=end)
 
     def query_lng_lso(self, lso: Union[ALSILSO, str],
-                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
         lso = lookup_lso(lso)
         return self._fetch(lso, APIType.ALSI, start=start, end=end)
 
@@ -86,13 +93,15 @@ class GieRawClient:
 
 
 class GiePandasClient(GieRawClient):
-    def _fix_dataframe(self, data):
+    @staticmethod
+    def _fix_dataframe(data):
         def _fix_values(x):
             if 'inventory' in x:
                 x['inventory'] = x['inventory']['lng']
             if 'dtmi' in x:
                 x['dtmi'] = x['dtmi']['lng']
             return x
+
         df = pd.DataFrame([_fix_values(x) for x in data])
         for c in ['name', 'code', 'url', 'info']:
             if c in df:
@@ -106,7 +115,12 @@ class GiePandasClient(GieRawClient):
         df = df.drop(columns=['status', 'updatedAt'])
         if 'type' in df:
             df = df.drop(columns=['type'])
-        df = df.replace('-', 0).astype(float)
+        for column in df.columns:
+            try:
+                df[column] = pd.to_numeric(df[column].replace('-', 0))
+            except ValueError:
+                pass
+        # df = df.replace('-', 0).astype(float)
         df['status'] = status
         df['updatedAt'] = updated_at
         return df
@@ -124,7 +138,7 @@ class GiePandasClient(GieRawClient):
         )
 
     def query_gas_country(self, country: Union[AGSICountry, str],
-                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_gas_country(country=country, start=start, end=end)
         )
@@ -136,7 +150,7 @@ class GiePandasClient(GieRawClient):
         )
 
     def query_lng_lso(self, lso: Union[ALSILSO, str],
-                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_lng_lso(lso=lso, start=start, end=end)
         )
