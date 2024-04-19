@@ -92,7 +92,6 @@ class ALSICountry(enum.Enum):
     PT = "PT", "Portugal"
     ES = "ES", "Spain"
 
-
 class ALSILSO(enum.Enum):
     """
     ENUM containing 2 things about an Area: code, country
@@ -183,13 +182,7 @@ class ALSITerminal(enum.Enum):
             'facility': self.code
         }
 
-    zeebrugge = '21W0000000001245', 'BE', '21X000000001006T',
-    ostsee_terminal = '37W000000000106C', 'DE', '37X000000000265F'
-    brunsbuettel = '37W000000000107A', 'DE', '21X000000001403J',
-    wilhelmshafen = '21W000000000129W', 'DE', '21X000000001403J',
-    wilhelmshafen_2 = '37W000000000111J', 'DE', '21X000000001403J'
-    stade_terminal = '37W000000000110L', 'DE', '21X000000001403J'
-    mukran = '37W000000000114D', 'DE', '37X000000000265F'
+    zeebrugge = '21W0000000001245', 'BE', '21X000000001006T'
     bilbao = '21W0000000000362', 'ES', '21X000000001352A'
     barcelona = '21W000000000039X', 'ES', '21X000000001254A'
     cartagena = '21W000000000038Z', 'ES', '21X000000001254A'
@@ -197,25 +190,19 @@ class ALSITerminal(enum.Enum):
     sagunto = '21W0000000000354', 'ES', '18XTGPRS-12345-G'
     mugardos = '21W0000000000338', 'ES', '18XRGNSA-12345-V'
     tvb_virtual_balancing_lng_tank = '18W000000000GVMT', 'ES', '21X0000000013368'
-    el_musel = '21W0000000000346', 'ES', '21X000000001254A'
     fos_tonkin = '63W179356656691A', 'FR', '21X0000000010679'
     montoir_de_bretagne = '63W631527814486R', 'FR', '21X0000000010679'
     dunkerque = '21W0000000000451', 'FR', '21X000000001331I'
     fos_cavaou = '63W943693783886F', 'FR', '21X000000001070K'
-    le_havre = '63W835858561887S', 'FR', '63X218318139939Y'
-    inkoo_terminal = '21W000000000130A', 'FI', '66X000000000027Z'
-    hamina = '66W000000000001U', 'FI', '66X-00000000024H'
     isle_of_grain = '21W000000000099F', 'GB', '21X-GB-A-A0A0A-7'
     south_hook = '21W0000000000419', 'GB', '21X0000000013554'
     revythoussa = '21W000000000040B', 'GR', '21X-GR-A-A0A0A-G'
-    alexandroupolis = '21W0000000001318', 'GR', '21X738265265081N'
     krk_fsru = '31W-0000-G-000-Z', 'HR', '31X-LNG-HR-----7'
     panigaglia = '59W0000000000011', 'IT', '26X00000117915-0'
     fsru_olt_offshore_lng_toscana = '21W0000000000443', 'IT', '21X000000001109G'
     porto_levante = '21W000000000082W', 'IT', '21X000000001360B'
-    piombino = '59WFSRUGOLARTUNH', 'IT', '59XFSRUITALIASTY'
     fsru_independence = '21W0000000001253', 'LT', '21X0000000013740'
     rotterdam_gate = '21W0000000000079', 'NL', '21X000000001063H'
-    eems_energy = '52W000000000001W', 'NL', '52X000000000088H'
     swinoujscie = '21W000000000096L', 'PL', '21X-PL-A-A0A0A-B'
     sines = '16WTGNL01------O', 'PT', '21X0000000013619'
+
