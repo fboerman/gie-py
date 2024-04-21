@@ -177,10 +177,11 @@ class AGSICompany(enum.Enum):
     swb_vertrieb_bremen = '11XSWB-BREMEN--I', 'DE'
     swkiel_speicher = '37X000000000051Y', 'DE'
     tep = '21X000000001307F', 'DE'
-    #total_etzel_gaslager = '**TOBEPROVIDED**', 'DE'
+    # total_etzel_gaslager = '**TOBEPROVIDED**', 'DE'
     trianel_gasspeicher_epe = '21X000000001310Q', 'DE'
     uniper_energy_storage = '21X000000001127H', 'DE'
     vng_gasspeicher_gmbh = '21X000000001138C', 'DE'
+    enovos_storage_gmbh = '37X000000000049L', 'DE'
     hexum = '21X0000000013643', 'HU'
     hgs = '21X0000000013635', 'HU'
     kinsale_energy = '47X0000000000584', 'IE'
@@ -201,6 +202,7 @@ class AGSICompany(enum.Enum):
     pozagas = '42X-POZAGAS-SK-V', 'SK'
     enagas_gts = '21X0000000013368', 'ES'
     swedegas = '21X-SE-A-A0A0A-F', 'SE'
+    ukrtransgaz = '21X0000000013279', 'UA'
     centrica_storage = '21X000000001022V', 'GB'
     edf = '23X-EDFE-------W', 'GB'
     humbly_grove_energy = '55XHUMBLYGROVE1H', 'GB'
@@ -274,7 +276,7 @@ class AGSIStorage(enum.Enum):
     vgs_ugs_etzel_edf = '37W000000000003M', 'DE', '37X000000000152S'
     vgs_ugs_etzel_enbw = '11W0-0000-0432-M', 'DE', '11X0-0000-0667-8'
     ugs_enschede_epe_eneco = '21W000000000012G', 'DE', '21X0000000010849'
-    ugs_frankenthal = '37Z0000000034538', 'DE', '**TOBEPROVIDED**'
+    ugs_frankenthal = '21W0000000001180', 'DE', '37X000000000049L'
     ugs_etzel_egl_equinor_storage_deutschland = '21W000000000100J', 'DE', '21X000000001368W'
     ugs_katharina = '21W0000000000281', 'DE', '21X000000001297T'
     ugs_etzel_ekb = '21Z000000000291I', 'DE', '21X000000001080H'
@@ -313,7 +315,7 @@ class AGSIStorage(enum.Enum):
     ugs_epe_trianel = '21W000000000085Q', 'DE', '21X000000001310Q'
     ugs_bierwang = '21W0000000000613', 'DE', '21X000000001127H'
     ugs_breitbrunn = '21W0000000000605', 'DE', '21X000000001127H'
-    ugs_epe_uniper_h= '21W000000000066U', 'DE', '21X000000001127H'
+    ugs_epe_uniper_h = '21W000000000066U', 'DE', '21X000000001127H'
     ugs_epe_uniper_l = '21W000000000065W', 'DE', '21X000000001127H'
     ugs_eschenfelden_uniper = '21W000000000083U', 'DE', '21X000000001127H'
     ugs_etzel_erdgas_lager_egl = '21W000000000059R', 'DE', '21X000000001127H'
@@ -323,6 +325,14 @@ class AGSIStorage(enum.Enum):
     ugs_jemgum_h_vgs = '21W000000000128Y', 'DE', '21X000000001138C'
     vgs_storage_hub_bernburg = '21W0000000000427', 'DE', '21X000000001138C'
     vgs_vtp_storage_gpl = '21W0000000001091', 'DE', '21X000000001138C'
+    ugs_kirchheiligen = '21W000000000023B', 'DE', '21X000000001138C'
+    ugs_xanten = '21W0000000000516', 'DE', '21X000000001262B',
+    ugs_nuettermoor = 'PRIOR_EWE_000001', 'DE', '21X0000000011756',
+    ugs_nuettermoor_h4 = '37W000000000105E', 'DE', '21X0000000011756',
+    ugs_haenlein = '21W000000000064Y', 'DE', '37X000000000042Z',
+    ugs_stockstadt = '21W0000000000621', 'DE', '37X000000000042Z',
+    ugs_epe_h_rwegswest = '21W0000000000524', 'DE', '21X000000001262B',
+    ugs_kiel_roenne_prior = '21W000000000058T', 'DE', '37X000000000051Y',
     ugs_szoreg_1 = '21W000000000086O', 'HU', '21X0000000013643'
     vgs_mfgt_pusztaederics = '21W000000000087M', 'HU', '21X0000000013635'
     ugs_kinsale_southwest = '47W000000000245J', 'IE', '47X0000000000584'
