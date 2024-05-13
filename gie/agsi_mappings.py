@@ -329,6 +329,7 @@ class AGSIStorage(enum.Enum):
     ugs_xanten = '21W0000000000516', 'DE', '21X000000001262B',
     ugs_nuettermoor = 'PRIOR_EWE_000001', 'DE', '21X0000000011756',
     ugs_nuettermoor_h4 = '37W000000000105E', 'DE', '21X0000000011756',
+    ugs_nuettermoor_h5 = '37W000000000112H', 'DE', '21X0000000011756',
     ugs_haenlein = '21W000000000064Y', 'DE', '37X000000000042Z',
     ugs_stockstadt = '21W0000000000621', 'DE', '37X000000000042Z',
     ugs_epe_h_rwegswest = '21W0000000000524', 'DE', '21X000000001262B',
