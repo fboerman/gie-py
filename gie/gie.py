@@ -117,7 +117,7 @@ class GiePandasClient(GieRawClient):
             df = df.drop(columns=['type'])
         for column in df.columns:
             try:
-                df[column] = pd.to_numeric(df[column].replace('-', 0))
+                df[column] = pd.to_numeric(df[column].replace('-', 0).infer_objects())
             except ValueError:
                 pass
         # df = df.replace('-', 0).astype(float)
