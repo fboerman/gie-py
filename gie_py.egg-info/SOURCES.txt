@@ -1,0 +1,14 @@
+LICENSE.md
+README.md
+setup.cfg
+setup.py
+gie/__init__.py
+gie/agsi_mappings.py
+gie/alsi_mappings.py
+gie/exceptions.py
+gie/gie.py
+gie_py.egg-info/PKG-INFO
+gie_py.egg-info/SOURCES.txt
+gie_py.egg-info/dependency_links.txt
+gie_py.egg-info/requires.txt
+gie_py.egg-info/top_level.txt
