@@ -81,6 +81,7 @@ class ALSICountry(enum.Enum):
             'country': self.code
         }
 
+    EU = "eu", "EU"
     BE = "BE", "Belgium"
     HR = "HR", "Croatia"
     FI = "FI", "Finland"

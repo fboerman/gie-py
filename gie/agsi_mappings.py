@@ -81,6 +81,7 @@ class AGSICountry(enum.Enum):
             'country': self.code
         }
 
+    EU = "EU", "EU"
     AT = "AT", "Austria"
     BE = "BE", "Belgium"
     BG = "BG", "Bulgaria"
