@@ -6,48 +6,48 @@ def lookup_lso(s: Union['ALSILSO', str]) -> 'ALSILSO':
     if isinstance(s, ALSILSO):
         # If it already is an ASGICompany object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return ALSILSO[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return ALSILSO[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in ALSILSO if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid lso string')
+            return [obj for obj in ALSILSO if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid lso string')
 
 
 def lookup_terminal(s: Union['ALSITerminal', str]) -> 'ALSITerminal':
     if isinstance(s, ALSITerminal):
         # If it already is an ASGICompany object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return ALSITerminal[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return ALSITerminal[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in ALSITerminal if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid terminal string')
+            return [obj for obj in ALSITerminal if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid terminal string')
 
 
 def lookup_country(s: Union['ALSICountry', str]) -> 'ALSICountry':
     if isinstance(s, ALSICountry):
         # If it already is an AGSICountry object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return ALSICountry[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return ALSICountry[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in ALSICountry if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid country string')
+            return [obj for obj in ALSICountry if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid country string')
 
 
 class ALSICountry(enum.Enum):
@@ -199,7 +199,7 @@ class ALSITerminal(enum.Enum):
     barcelona = '21W000000000039X', 'ES', '21X000000001254A'
     cartagena = '21W000000000038Z', 'ES', '21X000000001254A'
     huelva = '21W0000000000370', 'ES', '21X000000001254A'
-    el_musel = '21W0000000000346', 'ES', '21X000000000134P' 
+    el_musel = '21W0000000000346', 'ES', '21X000000000134P'
     sagunto = '21W0000000000354', 'ES', '18XTGPRS-12345-G'
     mugardos = '21W0000000000338', 'ES', '18XRGNSA-12345-V'
     tvb_virtual_balancing_lng_tank = '18W000000000GVMT', 'ES', '21X0000000013368'

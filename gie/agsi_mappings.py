@@ -6,48 +6,48 @@ def lookup_company(s: Union['AGSICompany', str]) -> 'AGSICompany':
     if isinstance(s, AGSICompany):
         # If it already is an ASGICompany object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return AGSICompany[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return AGSICompany[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in AGSICompany if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid company string')
+            return [obj for obj in AGSICompany if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid company string')
 
 
 def lookup_storage(s: Union['AGSIStorage', str]) -> 'AGSIStorage':
     if isinstance(s, AGSIStorage):
         # If it already is an ASGIStorage object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return AGSIStorage[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return AGSIStorage[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in AGSIStorage if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid storage string')
+            return [obj for obj in AGSIStorage if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid storage string')
 
 
 def lookup_country(s: Union['AGSICountry', str]) -> 'AGSICountry':
     if isinstance(s, AGSICountry):
         # If it already is an AGSICountry object, we're happy
         return s
-    else:  # It is a string
+    # It is a string
+    try:
+        # do lookup
+        return AGSICountry[s]
+    except KeyError:
+        # It is not, it may be a direct code
         try:
-            # do lookup
-            return AGSICountry[s]
-        except KeyError:
-            # It is not, it may be a direct code
-            try:
-                return [obj for obj in AGSICountry if obj.value == s][0]
-            except IndexError:
-                raise ValueError('Invalid country string')
+            return [obj for obj in AGSICountry if obj.value == s][0]
+        except IndexError:
+            raise ValueError('Invalid country string')
 
 
 class AGSICountry(enum.Enum):

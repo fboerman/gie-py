@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 """
 A setuptools based setup module for gie-py
@@ -23,9 +22,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 # Get the version from the source code
 with open(path.join(here, 'gie', 'gie.py'), encoding='utf-8') as f:
     lines = f.readlines()
-    for l in lines:
-        if l.startswith('__version__'):
-            __version__ = l.split('"')[1] # take the part after the first "
+    for line in lines:
+        if line.startswith('__version__'):
+            __version__ = line.split('"')[1] # take the part after the first "
 
 setup(
     name='gie-py',

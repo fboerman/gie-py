@@ -1,7 +1,6 @@
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import pandas as pd
-from typing import List, Dict, Union
 from .agsi_mappings import AGSICompany, AGSIStorage, AGSICountry, lookup_company, lookup_storage, lookup_country
 from .alsi_mappings import ALSITerminal, ALSILSO, ALSICountry, lookup_terminal, lookup_lso, \
     lookup_country as lookup_country_alsi
@@ -33,7 +32,7 @@ class GieRawClient:
         })
 
     def _fetch(self, obj, t: APIType,
-               start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]):
+               start: pd.Timestamp | str, end: pd.Timestamp | str):
         if type(start) is not pd.Timestamp:
             start = pd.Timestamp(start)
         if type(end) is not pd.Timestamp:
@@ -61,33 +60,33 @@ class GieRawClient:
 
         return data
 
-    def query_gas_storage(self, storage: Union[AGSIStorage, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_gas_storage(self, storage: AGSIStorage | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         storage = lookup_storage(storage)
         return self._fetch(storage, APIType.AGSI, start=start, end=end)
 
-    def query_gas_company(self, company: Union[AGSICompany, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_gas_company(self, company: AGSICompany | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         company = lookup_company(company)
         return self._fetch(company, APIType.AGSI, start=start, end=end)
 
-    def query_gas_country(self, country: Union[AGSICountry, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_gas_country(self, country: AGSICountry | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         country = lookup_country(country)
         return self._fetch(country, APIType.AGSI, start=start, end=end)
 
-    def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
-                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_lng_terminal(self, terminal: ALSITerminal | str,
+                           start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         terminal = lookup_terminal(terminal)
         return self._fetch(terminal, APIType.ALSI, start=start, end=end)
 
-    def query_lng_lso(self, lso: Union[ALSILSO, str],
-                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_lng_lso(self, lso: ALSILSO | str,
+                      start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         lso = lookup_lso(lso)
         return self._fetch(lso, APIType.ALSI, start=start, end=end)
 
-    def query_lng_country(self, country: Union[ALSICountry, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_lng_country(self, country: ALSICountry | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         country = lookup_country_alsi(country)
         return self._fetch(country, APIType.ALSI, start=start, end=end)
 
@@ -125,38 +124,38 @@ class GiePandasClient(GieRawClient):
         df['updatedAt'] = updated_at
         return df
 
-    def query_gas_storage(self, storage: Union[AGSIStorage, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+    def query_gas_storage(self, storage: AGSIStorage | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_gas_storage(storage=storage, start=start, end=end)
         )
 
-    def query_gas_company(self, company: Union[AGSIStorage, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+    def query_gas_company(self, company: AGSIStorage | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_gas_company(company=company, start=start, end=end)
         )
 
-    def query_gas_country(self, country: Union[AGSICountry, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+    def query_gas_country(self, country: AGSICountry | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_gas_country(country=country, start=start, end=end)
         )
 
-    def query_lng_terminal(self, terminal: Union[ALSITerminal, str],
-                           start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+    def query_lng_terminal(self, terminal: ALSITerminal | str,
+                           start: pd.Timestamp | str, end: pd.Timestamp | str) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_lng_terminal(terminal=terminal, start=start, end=end)
         )
 
-    def query_lng_lso(self, lso: Union[ALSILSO, str],
-                      start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> pd.DataFrame:
+    def query_lng_lso(self, lso: ALSILSO | str,
+                      start: pd.Timestamp | str, end: pd.Timestamp | str) -> pd.DataFrame:
         return self._fix_dataframe(
             super().query_lng_lso(lso=lso, start=start, end=end)
         )
 
-    def query_lng_country(self, country: Union[ALSICountry, str],
-                          start: Union[pd.Timestamp, str], end: Union[pd.Timestamp, str]) -> List[Dict]:
+    def query_lng_country(self, country: ALSICountry | str,
+                          start: pd.Timestamp | str, end: pd.Timestamp | str) -> list[dict]:
         return self._fix_dataframe(
             super().query_lng_country(country=country, start=start, end=end)
         )
