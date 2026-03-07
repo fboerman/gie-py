@@ -77,10 +77,15 @@ class ALSICountry(enum.Enum):
         return self.value
 
     def get_params(self):
+        if self.code == 'EU':
+            return {
+                'type': self.code
+            }
         return {
             'country': self.code
         }
 
+    EU = "EU", "European Union"
     BE = "BE", "Belgium"
     HR = "HR", "Croatia"
     FI = "FI", "Finland"
