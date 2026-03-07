@@ -4,3 +4,4 @@ secret.py
 __pycache__
 *.egg-info/
 build/
+.env
